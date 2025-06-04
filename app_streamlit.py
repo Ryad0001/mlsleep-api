@@ -36,6 +36,7 @@ if st.button("Prédire"):
 }
 
 
+
     try:
         response = requests.post(API_URL, json=data)
         if response.status_code == 200:
