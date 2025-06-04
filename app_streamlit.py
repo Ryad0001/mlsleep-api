@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # URL de ton API FastAPI (déployée sur Azure)
-API_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/docs#/"
+API_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/docs#/default/train_train_post"
 
 st.title("Prédiction des troubles du sommeil 💤")
 
