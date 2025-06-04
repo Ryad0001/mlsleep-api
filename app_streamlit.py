@@ -35,7 +35,6 @@ if st.button("Prédire"):
     "Diastolic": diastolic
 }
 
-    }
 
     try:
         response = requests.post(API_URL, json=data)
