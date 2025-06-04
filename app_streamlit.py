@@ -20,13 +20,21 @@ heart_rate = st.number_input("Fréquence cardiaque", 40, 150, 70)
 # Appel API
 if st.button("Prédire"):
     data = {
-        "Age": age,
-        "Sleep Duration": sleep_duration,
-        "Stress Level": stress_level,
-        "Physical Activity Level": physical_activity_level,
-        "BMI Category": bmi_category,
-        "Blood Pressure": blood_pressure,
-        "Heart Rate": heart_rate
+    "Gender": gender,
+    "Age": age,
+    "Occupation": occupation,
+    "Sleep_Duration": sleep_duration,
+    "Quality_of_Sleep": quality_of_sleep,
+    "Physical_Activity_Level": physical_activity_level,
+    "Stress_Level": stress_level,
+    "BMI_Category": bmi_category,
+    "Blood_Pressure": blood_pressure,
+    "Heart_Rate": heart_rate,
+    "Daily_Steps": daily_steps,
+    "Systolic": systolic,
+    "Diastolic": diastolic
+}
+
     }
 
     try:
