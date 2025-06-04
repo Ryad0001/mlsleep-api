@@ -30,7 +30,7 @@ if st.button("Prédire"):
     }
 
     try:
-        response = requests.post(API_URL, json=data)
+            response = requests.post(API_URL, json=data)
         if response.status_code == 200:
             prediction = response.json().get("prediction")
             st.success(f"Trouble prédit : {prediction}")
