@@ -34,13 +34,6 @@ def wait_until_model_ready(timeout=60):
 # --- Page principale
 st.title("🧠 Prédiction des troubles du sommeil")
 
-with st.spinner("🔁 Initialisation du modèle..."):
-    trigger_training()
-    if wait_until_model_ready():
-        st.success("✅ Modèle prêt pour les prédictions !")
-    else:
-        st.error("❌ Le modèle n’a pas pu être chargé à temps.")
-        st.stop()
 
 # --- Formulaire utilisateur
 st.subheader("📝 Données utilisateur")
