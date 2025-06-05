@@ -2,51 +2,49 @@ import streamlit as st
 import requests
 import time
 
-# --- URLs de l'API déployée sur Azure
-API_PREDICT_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/predict"
+# --- URLs de l'API FastAPI déployée sur Azure
 API_TRAIN_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/train"
+API_STATUS_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/status"
+API_PREDICT_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/predict"
 
-# --- Initialisation automatique : entraînement du modèle ---
+# --- Lancer l’entraînement
 @st.cache_resource(show_spinner=False)
-def initialize_model():
+def trigger_training():
     try:
-        response = requests.post(API_TRAIN_URL)
-        if response.status_code == 200:
-            st.info("✅ Modèle entraîné automatiquement.")
-        else:
-            st.warning(f"⚠️ Entraînement échoué : {response.text}")
-    except Exception as e:
-        st.error(f"Erreur lors de l’entraînement automatique : {e}")
-
-# --- Titre
-st.title("Prédiction des troubles du sommeil 💤")
-
-# --- Lancer l'entraînement automatique
-initialize_model()
-
-
-def is_model_ready():
-    try:
-        r = requests.get("https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/status")
-        return r.status_code == 200 and r.json().get("status") == "ready"
+        r = requests.post(API_TRAIN_URL)
+        if r.status_code == 200:
+            return True
     except:
         return False
+    return False
 
-# Attendre que le modèle soit prêt
-with st.spinner("⏳ Initialisation du modèle..."):
-    timeout = 30  # secondes max d'attente
+# --- Attendre que le modèle soit prêt
+def wait_until_model_ready(timeout=60):
     start = time.time()
-    while not is_model_ready():
+    while time.time() - start < timeout:
+        try:
+            r = requests.get(API_STATUS_URL)
+            if r.status_code == 200 and r.json().get("status") == "ready":
+                return True
+        except:
+            pass
         time.sleep(2)
-        if time.time() - start > timeout:
-            st.error("❌ Délai dépassé. Le modèle n’a pas pu être chargé.")
-            st.stop()
-    st.success("✅ Modèle chargé, tu peux lancer une prédiction.")
+    return False
 
+# --- Page principale
+st.title("🧠 Prédiction des troubles du sommeil")
 
-st.write("Remplis les informations ci-dessous pour recevoir une prédiction.")
+with st.spinner("🔁 Initialisation du modèle..."):
+    trigger_training()
+    if wait_until_model_ready():
+        st.success("✅ Modèle prêt pour les prédictions !")
+    else:
+        st.error("❌ Le modèle n’a pas pu être chargé à temps.")
+        st.stop()
 
 # --- Formulaire utilisateur
+st.subheader("📝 Données utilisateur")
+
 gender = st.selectbox("Genre", ["Male", "Female", "Other"])
 age = st.slider("Âge", 10, 100, 25)
 occupation = st.selectbox("Profession", ["Student", "Employee", "Self-employed", "Unemployed", "Other"])
@@ -61,8 +59,8 @@ daily_steps = st.number_input("Nombre de pas quotidiens", 0, 30000, 5000)
 systolic = st.number_input("Tension systolique", 80, 200, 120)
 diastolic = st.number_input("Tension diastolique", 40, 120, 80)
 
-# --- Appel API pour prédiction
-if st.button("Prédire"):
+# --- Lancer la prédiction
+if st.button("🔮 Prédire"):
     data = {
         "Gender": gender,
         "Age": age,
@@ -80,11 +78,11 @@ if st.button("Prédire"):
     }
 
     try:
-        response = requests.post(API_PREDICT_URL, json=data)
-        if response.status_code == 200:
-            prediction = response.json().get("prediction")
-            st.success(f"🧠 Trouble prédit : {prediction}")
+        r = requests.post(API_PREDICT_URL, json=data)
+        if r.status_code == 200:
+            prediction = r.json().get("prediction")
+            st.success(f"💤 Trouble prédit : {prediction}")
         else:
-            st.error(f"Erreur {response.status_code} : {response.text}")
+            st.error(f"Erreur {r.status_code} : {r.text}")
     except Exception as e:
         st.error(f"Erreur lors de la communication avec l’API : {e}")
