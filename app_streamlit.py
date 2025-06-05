@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import time
 
 # --- URLs de l'API déployée sur Azure
 API_PREDICT_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/predict"
@@ -23,7 +24,24 @@ st.title("Prédiction des troubles du sommeil 💤")
 # --- Lancer l'entraînement automatique
 initialize_model()
 
-st.warning("⏳ Le modèle est en cours d'entraînement. Patiente quelques secondes avant de lancer une prédiction.")
+
+def is_model_ready():
+    try:
+        r = requests.get("https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/status")
+        return r.status_code == 200 and r.json().get("status") == "ready"
+    except:
+        return False
+
+# Attendre que le modèle soit prêt
+with st.spinner("⏳ Initialisation du modèle..."):
+    timeout = 30  # secondes max d'attente
+    start = time.time()
+    while not is_model_ready():
+        time.sleep(2)
+        if time.time() - start > timeout:
+            st.error("❌ Délai dépassé. Le modèle n’a pas pu être chargé.")
+            st.stop()
+    st.success("✅ Modèle chargé, tu peux lancer une prédiction.")
 
 
 st.write("Remplis les informations ci-dessous pour recevoir une prédiction.")
