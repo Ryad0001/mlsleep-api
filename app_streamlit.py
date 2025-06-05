@@ -2,6 +2,13 @@ import streamlit as st
 import requests
 import time
 
+# --- Mapping des classes prédictives
+label_map = {
+    0: "Insomnia",
+    1: "Sleep Apnea",
+    2: "No Disorder"
+}
+
 # --- URLs de l'API FastAPI déployée sur Azure
 API_TRAIN_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/train"
 API_STATUS_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/status"
@@ -87,7 +94,9 @@ if st.button("🔮 Prédire"):
         r = requests.post(API_PREDICT_URL, json=data)
         if r.status_code == 200:
             prediction = r.json().get("prediction")
-            st.success(f"💤 Trouble prédit : {prediction}")
+            label = label_map.get(prediction, "Inconnu")
+            st.success(f"💤 Trouble prédit : {label}")
+
         else:
             st.error(f"Erreur {r.status_code} : {r.text}")
     except Exception as e:
