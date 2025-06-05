@@ -1,13 +1,31 @@
 import streamlit as st
 import requests
 
-API_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/predict"
+# --- URLs de l'API déployée sur Azure
+API_PREDICT_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/predict"
+API_TRAIN_URL = "https://mlsleepapi4-e6b7hhdzh0b9bjbt.francecentral-01.azurewebsites.net/train"
 
+# --- Initialisation automatique : entraînement du modèle ---
+@st.cache_resource(show_spinner=False)
+def initialize_model():
+    try:
+        response = requests.post(API_TRAIN_URL)
+        if response.status_code == 200:
+            st.info("✅ Modèle entraîné automatiquement.")
+        else:
+            st.warning(f"⚠️ Entraînement échoué : {response.text}")
+    except Exception as e:
+        st.error(f"Erreur lors de l’entraînement automatique : {e}")
+
+# --- Titre
 st.title("Prédiction des troubles du sommeil 💤")
+
+# --- Lancer l'entraînement automatique
+initialize_model()
 
 st.write("Remplis les informations ci-dessous pour recevoir une prédiction.")
 
-# Champs requis
+# --- Formulaire utilisateur
 gender = st.selectbox("Genre", ["Male", "Female", "Other"])
 age = st.slider("Âge", 10, 100, 25)
 occupation = st.selectbox("Profession", ["Student", "Employee", "Self-employed", "Unemployed", "Other"])
@@ -22,7 +40,7 @@ daily_steps = st.number_input("Nombre de pas quotidiens", 0, 30000, 5000)
 systolic = st.number_input("Tension systolique", 80, 200, 120)
 diastolic = st.number_input("Tension diastolique", 40, 120, 80)
 
-# Appel API
+# --- Appel API pour prédiction
 if st.button("Prédire"):
     data = {
         "Gender": gender,
@@ -41,10 +59,10 @@ if st.button("Prédire"):
     }
 
     try:
-        response = requests.post(API_URL, json=data)
+        response = requests.post(API_PREDICT_URL, json=data)
         if response.status_code == 200:
             prediction = response.json().get("prediction")
-            st.success(f"Trouble prédit : {prediction}")
+            st.success(f"🧠 Trouble prédit : {prediction}")
         else:
             st.error(f"Erreur {response.status_code} : {response.text}")
     except Exception as e:
