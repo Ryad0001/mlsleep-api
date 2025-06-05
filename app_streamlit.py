@@ -23,6 +23,9 @@ st.title("Prédiction des troubles du sommeil 💤")
 # --- Lancer l'entraînement automatique
 initialize_model()
 
+st.warning("⏳ Le modèle est en cours d'entraînement. Patiente quelques secondes avant de lancer une prédiction.")
+
+
 st.write("Remplis les informations ci-dessous pour recevoir une prédiction.")
 
 # --- Formulaire utilisateur
