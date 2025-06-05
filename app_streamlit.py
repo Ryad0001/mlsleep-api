@@ -60,6 +60,20 @@ systolic = st.number_input("Tension systolique", 80, 200, 120)
 diastolic = st.number_input("Tension diastolique", 40, 120, 80)
 
 # --- Lancer la prédiction
+# --- Section pour réentraîner le modèle
+st.subheader("🔧 Gestion du modèle")
+
+if st.button("🔁 Réentraîner le modèle maintenant"):
+    with st.spinner("Entraînement en cours..."):
+        try:
+            r = requests.post(API_TRAIN_URL)
+            if r.status_code == 200:
+                st.success("✅ Modèle réentraîné avec succès.")
+            else:
+                st.error(f"Erreur lors du réentraînement : {r.status_code} - {r.text}")
+        except Exception as e:
+            st.error(f"Erreur lors de l’appel à l’API : {e}")
+
 if st.button("🔮 Prédire"):
     data = {
         "Gender": gender,
