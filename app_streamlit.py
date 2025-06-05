@@ -54,7 +54,6 @@ diastolic = st.number_input("Tension diastolique", 40, 120, 80)
 
 # --- Lancer la prédiction
 # --- Section pour réentraîner le modèle
-st.subheader("🔧 Gestion du modèle")
 
 if st.button("🔁 Réentraîner le modèle maintenant"):
     with st.spinner("Entraînement en cours..."):
