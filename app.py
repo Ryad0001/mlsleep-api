@@ -128,3 +128,12 @@ def train():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# -------- Endpoint de statut du modèle ----------
+@app.get("/status")
+def get_status():
+    if model is not None:
+        return {"status": "ready"}
+    else:
+        return {"status": "loading"}
+
