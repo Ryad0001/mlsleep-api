@@ -4,9 +4,9 @@ import time
 
 # --- Mapping des classes prédictives
 label_map = {
-    0: "Insomnia",
-    1: "Sleep Apnea",
-    2: "No Disorder"
+    0: "Insomnie",
+    1: "Apnée du sommeil",
+    2: "Aucun trouble détecté"
 }
 
 # --- URLs de l'API FastAPI déployée sur Azure
