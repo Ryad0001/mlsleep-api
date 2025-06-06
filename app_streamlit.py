@@ -39,7 +39,7 @@ def wait_until_model_ready(timeout=60):
     return False
 
 # --- Page principale
-st.title("🧠 Prédiction des troubles du sommeil")
+st.title("💤 Prédiction des troubles du sommeil")
 
 
 # --- Formulaire utilisateur
