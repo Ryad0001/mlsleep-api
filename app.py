@@ -78,6 +78,15 @@ def predict(input_data: SleepInput):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+# -------- Vérifier si le modèle est chargé ----------
+@app.get("/status")
+def status():
+    if model is None:
+        return {"status": "not ready"}
+    return {"status": "ready"}
+
+
+
 # -------- Entraînement du modèle ----------
 @app.post("/train")
 def train():
