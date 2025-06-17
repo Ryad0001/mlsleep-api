@@ -57,12 +57,6 @@ def load_initial_model():
     except Exception as e:
         print(f"⚠️ Impossible de charger le modèle au démarrage : {e}")
 
-@app.get("/status")
-def status():
-    if model is None:
-        return {"status": "not ready"}
-    return {"status": "ready"}
-
 
 
 # -------- Endpoint de prédiction ----------
